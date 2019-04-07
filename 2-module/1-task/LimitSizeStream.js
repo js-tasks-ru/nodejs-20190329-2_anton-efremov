@@ -4,15 +4,15 @@ const LimitExceededError = require('./LimitExceededError');
 class LimitSizeStream extends stream.Transform {
   constructor(options) {
     super(options);
-    this.limit = options.limit;
-    this.symbolCounter = 0;
+    this.byteLimit = options.limit;
+    this.byteCounter = 0;
   }
 
   _transform(chunk, encoding, callback) {
     const str = chunk.toString(); // failed to use the encoding param here :~(
-    this.symbolCounter += chunk.length; // it could be just str.length, but we also considering symbols with double byte encoding
+    this.byteCounter += chunk.length; // it could be just str.length, but we also considering symbols with double byte encoding
 
-    if (this.symbolCounter > this.limit) {
+    if (this.byteCounter > this.byteLimit) {
       callback(new LimitExceededError(), null);
     }
 
